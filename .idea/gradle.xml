@@ -11,6 +11,46 @@
           </set>
         </option>
       </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/functional" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/functional" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/main_application" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/main_application" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/message_queue" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/message_queue" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/process_monitor" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/process_monitor" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/terminal" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/terminal" />
+          </set>
+        </option>
+      </GradleProjectSettings>
     </option>
   </component>
 </project>
