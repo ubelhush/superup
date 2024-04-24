@@ -1,4 +1,4 @@
-package main_application.dialog
+package main_application.dialog.create_folder_dialog
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -9,28 +9,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import main_application.main_screen.events.DialogEvent
-import main_application.main_screen.view_model.DialogState
 
 @Composable
 fun CreateFolderDialog(
-    state: DialogState,
-    onEvent:(DialogEvent)->Unit
+    state: FolderDialogState,
+    onEvent:(CFDialogEvent)->Unit
 ) {
     Dialog(
-        onDismissRequest = {}
+        onDismissRequest = {onEvent(CFDialogEvent.OnDismiss)}
     ) {
         Card {
             Column(
                 modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp)
             ) {
                 Text(
-                    text = if(state.isFolder) "folder name" else "file name"
+                    text = if(state.isFolder) "folder.png name" else "file name"
                 )
                 TextField(
                     value = state.folderName,
                     onValueChange = {newName->
-                             onEvent(DialogEvent.OnNameChange(newName))
+                             onEvent(CFDialogEvent.OnNameChange(newName))
                     },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
@@ -40,7 +38,7 @@ fun CreateFolderDialog(
 
                 Row {
                     Button(onClick = {
-                        onEvent(DialogEvent.OnDismiss)
+                        onEvent(CFDialogEvent.OnDismiss)
                     }) {
                         Text(
                             text = "cansel"
@@ -50,7 +48,7 @@ fun CreateFolderDialog(
                     Spacer(modifier = Modifier.weight(1f))
 
                     Button(onClick = {
-                        onEvent(DialogEvent.OnConfirm)
+                        onEvent(CFDialogEvent.OnConfirm)
                     }) {
                         Text(
                             text = "confirm"

@@ -1,4 +1,4 @@
-package main_application.common_ui
+package main_application.top_menu
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.DropdownMenu
@@ -13,18 +13,20 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import main_application.dialog.simple_dialog.SimpleInfoDialog
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TopMenu(
     modifier: Modifier = Modifier
 ) {
+    val viewModel = remember { TopMenuViewModel() }
     val menuItems = listOf(
         TopMenuItem.Tasks,
         TopMenuItem.Terminal,
         TopMenuItem.Help,
     )
-    val coroutineScope= rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
     var currentItem by remember { mutableStateOf<TopMenuItem?>(null) }
 
     Row(
@@ -53,7 +55,7 @@ fun TopMenu(
                         DropdownMenuItem(
                             onClick = {
                                 coroutineScope.launch {
-                                    contextItem.action()
+                                    contextItem.action(viewModel::onEvent)
                                 }
                             }
                         ) {
@@ -63,5 +65,12 @@ fun TopMenu(
                 }
             }
         }
+    }
+
+    if(viewModel.simpleDialogState.showDialog){
+        SimpleInfoDialog(
+            state = viewModel.simpleDialogState,
+            onEvent = viewModel::onEvent
+        )
     }
 }

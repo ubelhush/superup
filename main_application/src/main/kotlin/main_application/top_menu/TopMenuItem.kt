@@ -1,11 +1,9 @@
-package main_application.common_ui
+package main_application.top_menu
 
 import main_application.utils.Routes
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
 
 sealed class TopMenuItem(val title: String, val contextItems: List<ContextItem>) {
+
     data object Tasks : TopMenuItem(
         title = "Tasks",
         contextItems = listOf(
@@ -39,14 +37,32 @@ sealed class TopMenuItem(val title: String, val contextItems: List<ContextItem>)
     data object Help : TopMenuItem(
         title = "help",
         contextItems = listOf(
-            ContextItem("about") {
-
+            ContextItem("about") { out ->
+                out(
+                    TopMenuEvent.ShowSimpleDialog(
+                        "Операционные системы и оболочки,\n" +
+                                "Язык программирования: Kotlin,\n" +
+                                "Чурашов Алмаз Марсович, ПрИ-23"
+                    )
+                )
+            },
+            ContextItem("hotkey") { out ->
+                out(
+                    TopMenuEvent.ShowSimpleDialog(
+                        "Ctrl + C копирование\n" +
+                                "Ctrl + V вставка\n" +
+                                "Ctrl + X вырезка\n" +
+                                "Ctrl + Delete удаление\n"+
+                                "Alt + F4 выход из приложения\n"
+                    )
+                )
             }
         )
     )
 }
 
+
 data class ContextItem(
     val title: String,
-    val action: () -> Unit
+    val action: (onEvent: (TopMenuEvent) -> Unit) -> Unit = {}
 )

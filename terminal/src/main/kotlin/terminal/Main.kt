@@ -6,6 +6,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import terminal.main_screen.ui.MainScreen
+import terminal.main_screen.ui.MainScreen1
 
 fun main() = application {
     Window(
@@ -14,6 +15,6 @@ fun main() = application {
         ),
         onCloseRequest = ::exitApplication
     ) {
-        MainScreen()
+        MainScreen1()
     }
 }

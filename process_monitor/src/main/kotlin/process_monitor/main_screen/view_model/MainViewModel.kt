@@ -5,14 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
+import main_application.dialog.create_folder_dialog.SRDialogEvent
+import main_application.dialog.create_folder_dialog.SaveReportDialogState
+import process_monitor.main_screen.event.MainEvent
+import java.io.*
 import java.util.*
 
 class MainViewModel(private val pids: Array<String>) {
     private val _mainState= MutableStateFlow(MainState())
     var mainState =_mainState.asStateFlow()
+    var dialogState by mutableStateOf(SaveReportDialogState())
+    private set
 
     private val timer = Timer("update process")
 
@@ -28,9 +31,40 @@ class MainViewModel(private val pids: Array<String>) {
                 )
             }
         }
-        timer.schedule(task, 5, 5000)
+        timer.schedule(task, 0, 3000)
     }
 
+    fun onEvent(event:MainEvent){
+        when(event){
+            MainEvent.OnShowDialog -> {
+                dialogState=dialogState.copy(
+                    showDialog = true
+                )
+            }
+        }
+    }
+    fun onEvent(event: SRDialogEvent){
+        when(event){
+            SRDialogEvent.OnConfirm -> {
+                saveReport()
+                dialogState=dialogState.copy(
+                    name = "",
+                    showDialog = false
+                )
+            }
+            SRDialogEvent.OnDismiss -> {
+                dialogState=dialogState.copy(
+                    name = "",
+                    showDialog = false
+                )
+            }
+            is SRDialogEvent.OnNameChange -> {
+                dialogState=dialogState.copy(
+                    name = event.name
+                )
+            }
+        }
+    }
     private fun getProcessChildrenID(): List<String> {
         var childProcessPIDS = emptyList<String>()
 
@@ -57,7 +91,7 @@ class MainViewModel(private val pids: Array<String>) {
                 "-p",
                 pid,
                 "-o",
-                "pid,user,%cpu,time,cmd"
+                "pid,user,lstart,%cpu,time,cmd"
             ).start()
             val reader = BufferedReader(InputStreamReader(process.inputStream))
 
@@ -67,9 +101,10 @@ class MainViewModel(private val pids: Array<String>) {
                     ProcessData(
                         pid = args[0],
                         user = args[1],
-                        cpu = args[2],
-                        time = args[3],
-                        cmd = args[4]
+                        lstart = args.subList(2,7).joinToString(" "),
+                        cpu = args[7],
+                        time = args[8],
+                        cmd = args[9]
                     )
                 } else {
                     null
@@ -83,6 +118,16 @@ class MainViewModel(private val pids: Array<String>) {
 
         return processInfo
     }
+
+    private fun saveReport(){
+        val fileWriter = FileWriter("./root/home/${dialogState.name}")
+        val printWriter = PrintWriter(fileWriter)
+
+        printWriter.println("time\t\t\t\tname")
+        mainState.value.processes.forEach { processData ->
+            printWriter.println("${processData.lstart}\t${processData.cmd}")
+        }
+    }
 }
 
 data class MainState(
@@ -92,6 +137,7 @@ data class MainState(
 data class ProcessData(
     val pid: String = "",
     val user: String = "",
+    val lstart:String = "",
     val cpu: String = "",
     val time: String = "",
     val cmd: String = "",

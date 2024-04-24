@@ -13,7 +13,10 @@ import java.nio.file.Paths
 import java.util.*
 
 class MainViewModel(private val coroutineScope: CoroutineScope) {
-    var mainState by mutableStateOf(MainState())
+    var mainState by mutableStateOf(MainState(
+        answerText = "Welcome to the terminal",
+        inputPrompt = ">>> "
+    ))
         private set
 
     init {
@@ -126,8 +129,7 @@ class MainViewModel(private val coroutineScope: CoroutineScope) {
             "mkdir" -> {
                 if (command.size != 2) {
                     result = "Usage: mkdir <directory_name>"
-                }
-                else{
+                } else {
                     val newDirectoryName: String = command[1]
                     val newDirectory = File(newDirectoryName)
 
@@ -148,8 +150,7 @@ class MainViewModel(private val coroutineScope: CoroutineScope) {
             "cd" -> {
                 if (command.size != 2) {
                     result = "Usage: cd <directory_path>"
-                }
-                else{
+                } else {
                     val targetDirectory: String = command[1]
                     val newDir = File(targetDirectory)
                     result = if (newDir.exists() && newDir.isDirectory) {
@@ -172,13 +173,26 @@ class MainViewModel(private val coroutineScope: CoroutineScope) {
                 mainState = mainState.copy(answerText = "")
             }
 
+            "help"->{
+                result="ip address show - It is used to display information about network interfaces, including IP addresses.\n\n" +
+                        "traceroute - It is used to track the route that data packets travel from your computer to the target node or host on the network.\n\n" +
+                        "ss -tuln - used to list all open sockets\n\n" +
+                        "wget - It is used to download files from the Internet over HTTP, HTTPS and FTP.\n\n" +
+                        "find - it is used to search for files and directories in the file system\n\n" +
+                        "ls - used to display the contents of the catalog\n\n" +
+                        "mkdir - used to create a new directory\n\n" +
+                        "cd - used to change the current working directory\n\n" +
+                        "pwd - used to display the current working directory (current location)\n\n" +
+                        "clear - It is used to clear the terminal screen."
+            }
+
             else -> {
                 result = " Unknown command: ${command.joinToString(" ")}"
             }
         }
 
         mainState = mainState.copy(
-            answerText = mainState.answerText + result + "\n"
+            answerText = mainState.answerText + "\n" + ">>>" + command.joinToString() + "\n" + result
         )
     }
 
@@ -214,5 +228,6 @@ class MainViewModel(private val coroutineScope: CoroutineScope) {
 data class MainState(
     val currentDir: String = "",
     val commandText: String = "",
+    val inputPrompt:String ="",
     val answerText: String = ""
 )
